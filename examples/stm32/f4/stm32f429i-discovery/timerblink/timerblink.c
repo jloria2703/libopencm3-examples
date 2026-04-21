@@ -192,14 +192,11 @@ void tim1_up_tim10_isr(void)
   gpio_toggle(LUP);
 }
 
-
 int main(void)
-{
-	int i;
-
+{	 
 	clock_setup();
 	gpio_setup();
-    tim_setup();
+    	tim_setup();
 
 	/* Set two LEDs for wigwag effect when toggling. */
 	gpio_set(LGREENF_PORT, LGREENF);
@@ -208,9 +205,50 @@ int main(void)
 	while (1) {
 		/* Toggle LEDs. */
 		gpio_toggle(LGREENF_PORT, LGREENF);
-		for (i = 0; i < 6000000; i++) { /* Wait a bit. */
+		for (int i = 0; i < 6000000; i++) { /* Wait a bit. */
 			__asm__("nop");
 		}
+	
+	int clock_freq = 16800000;
+	int cambio = 0;
+	int seconds = 0;
+	
+	while(cambio <5){
+	
+	switch (cambio){
+	
+	case 0:
+		timer_set_oc_value(TIM1, TIM_OC1, 656); // 0%
+		seconds = 2;
+		break;
+	case 1:
+		timer_set_oc_value(TIM1, TIM_OC1, 787); //10%
+		seconds = 1;
+		break;
+		
+	case 2: 
+		timer_set_oc_value(TIM1, TIM_OC1, 1200); // 100%
+		seconds = 3;
+		break;
+	case 3: 
+		timer_set_oc_value(TIM1, TIM_OC1, 984); // 50%
+		seconds = 1;
+		break;
+	case 4: 
+		timer_set_oc_value(TIM1, TIM_OC1, 787); // 10%
+		seconds = 5;
+		break; 
+	default: 
+		timer_set_oc_value(TIM1, TIM_OC1, 656); // 0%
+		seconds = 2;
+		break;
+	}	
+	for (int j = 0; j < clock_freq *seconds; j++) { /* Wait the numb of seconds need. */
+		__asm__("nop");
+	}
+	cambio = cambio + 1; 
+	}
+ 	
 	}
 
 	return 0;
