@@ -149,7 +149,7 @@ static void tim_setup(void)
 	timer_set_period(TIM1, 13124);
 
 	/* Set the initual output compare value for OC1. */
-	timer_set_oc_value(TIM1, TIM_OC1, 984); // no usar los negativos
+	timer_set_oc_value(TIM1, TIM_OC1, 1312); // no usar los negativos
 
     /* Disable outputs. */
     //timer_enable_oc_output(TIM1, TIM_OC1);
