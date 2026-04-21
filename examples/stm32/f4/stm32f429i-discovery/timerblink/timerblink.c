@@ -145,8 +145,8 @@ static void tim_setup(void)
     timer_disable_preload(TIM1);
     timer_continuous_mode(TIM1);
 
-    /* Count period */
-	timer_set_period(TIM1, 2563);
+    /* Count period ARR*/
+	timer_set_period(TIM1, 255);
 
 	/* Set the initual output compare value for OC1. */
 	timer_set_oc_value(TIM1, TIM_OC1, 320); // no usar los negativos
