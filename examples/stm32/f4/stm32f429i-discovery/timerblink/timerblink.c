@@ -140,16 +140,16 @@ static void tim_setup(void)
 	 * might not be the raw APB1/APB2 clocks.  In various conditions they
 	 * are doubled.  See the Reference Manual for full details!
 	 */
-	timer_set_prescaler(TIM1, 0x0FFE); // 4094Hz clk
+	timer_set_prescaler(TIM1, 0x00FF); // 50Hz clk
     //timer_set_repetition_counter(TIM1, 15);
     timer_disable_preload(TIM1);
     timer_continuous_mode(TIM1);
 
     /* Count period ARR*/
-	timer_set_period(TIM1, 2563);
+	timer_set_period(TIM1, 13124);
 
 	/* Set the initual output compare value for OC1. */
-	timer_set_oc_value(TIM1, TIM_OC1, 1281); // no usar los negativos
+	timer_set_oc_value(TIM1, TIM_OC1, 656); // no usar los negativos
 
     /* Disable outputs. */
     //timer_enable_oc_output(TIM1, TIM_OC1);
