@@ -196,59 +196,79 @@ int main(void)
 {	 
 	clock_setup();
 	gpio_setup();
-    	tim_setup();
+    tim_setup();
 
 	/* Set two LEDs for wigwag effect when toggling. */
 	gpio_set(LGREENF_PORT, LGREENF);
 
+	/*
+	 * Values for the servo angular movement.
+	 * These are not PWM percentages directly.
+	 *
+	 * 0% angular   -> 5% PWM  -> CCR = 656
+	 * 10% angular  -> approx. 5.5% PWM -> CCR = 722
+	 * 50% angular  -> 7.5% PWM -> CCR = 984
+	 * 100% angular -> 10% PWM -> CCR = 1312
+	 */
+	int servo_0 = 656;
+	int servo_10 = 722;
+	int servo_50 = 984;
+	int servo_100 = 1312;
+
+	/*
+	 * Approximate delay.
+	 * Volatile is used to prevent the compiler from removing the loop.
+	 * If the servo moves too fast, increase this value.
+	 * If the servo moves too slowly, decrease this value.
+	 */
+	int delay_1s = 10500000;
 	/* Blink the LEDs (PG13 and PG14) on the board. */
 	while (1) {
-		/* Toggle LEDs. */
-		gpio_toggle(LGREENF_PORT, LGREENF);
-		for (int i = 0; i < 6000000; i++) { /* Wait a bit. */
-			__asm__("nop");
+
+		/* 0% angular for 2 seconds */
+		timer_set_oc_value(TIM1, TIM_OC1, servo_0);
+		for (int s = 0; s < 2; s++) {
+			gpio_toggle(LGREENF_PORT, LGREENF);
+			for (volatile int i = 0; i < delay_1s; i++) {
+				__asm__("nop");
+			}
 		}
-	
-	int clock_freq = 168000000;
-	int cambio = 0;
-	int seconds = 0;
-	
-	while(cambio <5){
-	
-	switch (cambio){
-	
-	case 0:
-		timer_set_oc_value(TIM1, TIM_OC1, 656); // 0%
-		seconds = 2;
-		break;
-	case 1:
-		timer_set_oc_value(TIM1, TIM_OC1, 787); //10%
-		seconds = 1;
-		break;
-		
-	case 2: 
-		timer_set_oc_value(TIM1, TIM_OC1, 1200); // 100%
-		seconds = 3;
-		break;
-	case 3: 
-		timer_set_oc_value(TIM1, TIM_OC1, 984); // 50%
-		seconds = 1;
-		break;
-	case 4: 
-		timer_set_oc_value(TIM1, TIM_OC1, 787); // 10%
-		seconds = 5;
-		break; 
-	default: 
-		timer_set_oc_value(TIM1, TIM_OC1, 656); // 0%
-		seconds = 2;
-		break;
-	}	
-	for (int j = 0; j < clock_freq *seconds; j++) { /* Wait the numb of seconds need. */
-		__asm__("nop");
-	}
-	cambio = cambio + 1; 
-	}
- 	
+
+		/* 10% angular for 1 second */
+		timer_set_oc_value(TIM1, TIM_OC1, servo_10);
+		for (int s = 0; s < 1; s++) {
+			gpio_toggle(LGREENF_PORT, LGREENF);
+			for (volatile int i = 0; i < delay_1s; i++) {
+				__asm__("nop");
+			}
+		}
+
+		/* 100% angular for 3 seconds */
+		timer_set_oc_value(TIM1, TIM_OC1, servo_100);
+		for (int s = 0; s < 3; s++) {
+			gpio_toggle(LGREENF_PORT, LGREENF);
+			for (volatile int i = 0; i < delay_1s; i++) {
+				__asm__("nop");
+			}
+		}
+
+		/* 50% angular for 1 second */
+		timer_set_oc_value(TIM1, TIM_OC1, servo_50);
+		for (int s = 0; s < 1; s++) {
+			gpio_toggle(LGREENF_PORT, LGREENF);
+			for (volatile int i = 0; i < delay_1s; i++) {
+				__asm__("nop");
+			}
+		}
+
+		/* 10% angular for 5 seconds */
+		timer_set_oc_value(TIM1, TIM_OC1, servo_10);
+		for (int s = 0; s < 5; s++) {
+			gpio_toggle(LGREENF_PORT, LGREENF);
+			for (volatile int i = 0; i < delay_1s; i++) {
+				__asm__("nop");
+			}
+		}
 	}
 
 	return 0;
